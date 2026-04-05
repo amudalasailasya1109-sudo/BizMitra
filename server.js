@@ -16,23 +16,22 @@ const PORT = 3000;
 app.use(cors());
 app.use(express.json());
 
-// Serve frontend files from the "files" folder
-app.use(express.static(path.join(__dirname, 'files')));
+// app.use(express.static(path.join(__dirname)));
 
 app.get('/', (req, res) => {
-  res.sendFile(path.join(__dirname, 'files', 'index.html'));
+  res.sendFile(path.join(__dirname, 'index.html'));
 });
 
 // ── HELPER: Read & Write JSON files ─────────────────────────
 function readJSON(filename) {
-  const filepath = path.join(__dirname, 'data', filename);
+  const filepath = path.join(__dirname, filename);   // ← no 'data' subfolder
   if (!fs.existsSync(filepath)) return [];
   const raw = fs.readFileSync(filepath, 'utf8');
   return JSON.parse(raw);
 }
 
 function writeJSON(filename, data) {
-  const filepath = path.join(__dirname, 'data', filename);
+  const filepath = path.join(__dirname, filename);   // ← no 'data' subfolder
   fs.writeFileSync(filepath, JSON.stringify(data, null, 2), 'utf8');
 }
 
