@@ -5,7 +5,7 @@
 
 const { MongoClient } = require('mongodb');
 
-const MONGO_URI = process.env.MONGO_URI || 'mongodb+srv://sai_lasya:sailasya1109@cluster0.otakzhm.mongodb.net/?retryWrites=true&w=majority';;
+const MONGO_URI = process.env.MONGO_URI || 'mongodb+srv://sai_lasya:sailasya1109@cluster0.otakzhm.mongodb.net/bizmitra?retryWrites=true&w=majority';
 const DB_NAME   = 'bizmitra';
 
 let db;
