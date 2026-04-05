@@ -13,8 +13,9 @@ async function connectDB() {
     });
     db = client.db(DB_NAME);
     console.log('✅  Connected to MongoDB Atlas successfully!');
-  } catch (err) {
-    console.error('❌  MongoDB connection failed:', err.message);
+ } catch (err) {
+    console.error('❌  MongoDB connection failed FULL ERROR:');
+    console.error(err);
     process.exit(1);
   }
 }
