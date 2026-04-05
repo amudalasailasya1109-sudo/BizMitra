@@ -1,0 +1,50 @@
+[
+  {
+    "id": "1775222029464",
+    "name": "monaco",
+    "category": "snack",
+    "quantity": 0,
+    "unit": "pcs",
+    "expiryDate": "2026-04-05",
+    "buyPrice": 9,
+    "sellPrice": 10,
+    "supplierName": "balaram",
+    "addedOn": "2026-04-03T13:13:49.464Z"
+  },
+  {
+    "id": "1775317592762",
+    "name": "pg",
+    "category": "snack",
+    "quantity": 12,
+    "unit": "pcs",
+    "expiryDate": "2026-05-01",
+    "buyPrice": 8,
+    "sellPrice": 10,
+    "supplierName": "balaram",
+    "addedOn": "2026-04-04T15:46:32.762Z"
+  },
+  {
+    "id": "1775317624364",
+    "name": "hide",
+    "category": "snack",
+    "quantity": 24,
+    "unit": "pcs",
+    "expiryDate": "2026-04-30",
+    "buyPrice": 24,
+    "sellPrice": 30,
+    "supplierName": "",
+    "addedOn": "2026-04-04T15:47:04.365Z"
+  },
+  {
+    "id": "1775317910462",
+    "name": "milano",
+    "category": "snack",
+    "quantity": 24,
+    "unit": "pcs",
+    "expiryDate": "2026-05-05",
+    "buyPrice": 12,
+    "sellPrice": 17,
+    "supplierName": "balaram",
+    "addedOn": "2026-04-04T15:51:50.462Z"
+  }
+]

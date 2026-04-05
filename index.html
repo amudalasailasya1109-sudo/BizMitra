@@ -1,0 +1,389 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>BizMitra – Stock Smart</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet"/>
+  <link rel="stylesheet" href="style.css"/>
+</head>
+<body>
+
+<div class="overlay" id="overlay" onclick="toggleSidebar()"></div>
+
+<!-- MODAL BACKDROP -->
+<div class="modal-backdrop" id="modal-backdrop" onclick="closeModal()"></div>
+
+<!-- KATHA TRANSACTION MODAL -->
+<div class="modal" id="katha-modal">
+  <div class="modal-header">
+    <span class="modal-title" id="katha-modal-title">Add Entry</span>
+    <button class="modal-close" onclick="closeModal()">✕</button>
+  </div>
+  <div class="modal-body">
+    <form onsubmit="submitKathaTransaction(event)" id="katha-txn-form">
+      <input type="hidden" id="katha-txn-id"/>
+      <div class="form-group" style="margin-bottom:14px;">
+        <label>Transaction Type</label>
+        <div class="radio-group">
+          <label class="radio-label">
+            <input type="radio" name="txnType" value="credit" checked/> Credit (they owe you)
+          </label>
+          <label class="radio-label">
+            <input type="radio" name="txnType" value="payment"/> Payment (they paid)
+          </label>
+        </div>
+      </div>
+      <div class="form-group" style="margin-bottom:14px;">
+        <label>Amount (₹) *</label>
+        <input type="number" id="katha-amount" placeholder="e.g. 250" min="1" step="0.01" required/>
+      </div>
+      <div class="form-group" style="margin-bottom:18px;">
+        <label>Note (optional)</label>
+        <input type="text" id="katha-note" placeholder="e.g. Bought rice and dal"/>
+      </div>
+      <button type="submit" class="btn-primary" style="width:100%;">Save Entry</button>
+    </form>
+  </div>
+</div>
+
+<!-- SIDEBAR -->
+<aside class="sidebar" id="sidebar">
+  <div class="sidebar-logo">
+    <div class="logo-icon">
+      <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.2">
+        <path stroke-linecap="round" stroke-linejoin="round" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2"/>
+      </svg>
+    </div>
+    <span>BizMitra</span>
+  </div>
+
+  <div class="sidebar-section-label">Main Menu</div>
+  <a class="nav-item active" href="#" onclick="showPage('dashboard');return false;">
+    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/></svg>
+    Dashboard
+  </a>
+  <a class="nav-item" href="#" onclick="showPage('inventory');return false;">
+    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10"/></svg>
+    Inventory
+    <span class="nav-badge" id="notif-badge">0</span>
+  </a>
+  <a class="nav-item" href="#" onclick="showPage('additem');return false;">
+    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M12 4v16m8-8H4"/></svg>
+    Add Item
+  </a>
+
+  <div class="sidebar-section-label">Business</div>
+  <a class="nav-item" href="#" onclick="showPage('billing');return false;">
+    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><rect x="2" y="5" width="20" height="14" rx="2"/><path stroke-linecap="round" d="M2 10h20"/></svg>
+    Billing
+  </a>
+  <a class="nav-item" href="#" onclick="showPage('sales');return false;">
+    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"/></svg>
+    Sales Records
+  </a>
+  <a class="nav-item" href="#" onclick="showPage('katha');return false;">
+    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253"/></svg>
+    Katha Book
+  </a>
+
+  <div class="sidebar-section-label">Network</div>
+  <a class="nav-item" href="#" onclick="showPage('suppliers');return false;">
+    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4"/></svg>
+    Suppliers
+  </a>
+
+  <div class="sidebar-section-label">Settings</div>
+  <a class="nav-item" href="#" onclick="showPage('notifications');return false;">
+    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9"/></svg>
+    Notifications
+    <span class="nav-badge" id="notif-badge-2">0</span>
+  </a>
+</aside>
+
+<!-- MAIN -->
+<div class="main">
+  <header class="topbar">
+    <div class="topbar-left">
+      <button class="hamburger" onclick="toggleSidebar()">
+        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M4 6h16M4 12h16M4 18h16"/></svg>
+      </button>
+      <div class="brand">
+        <div class="brand-icon">
+          <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.2"><path stroke-linecap="round" stroke-linejoin="round" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2"/></svg>
+        </div>
+        BizMitra
+      </div>
+    </div>
+    <div class="topbar-right">
+      <button class="notif-btn" onclick="showPage('notifications')" style="position:relative;">
+        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9"/></svg>
+        <span id="bell-badge" style="display:none;position:absolute;top:2px;right:2px;background:#ef4444;color:white;font-size:9px;font-weight:700;border-radius:50%;width:15px;height:15px;align-items:center;justify-content:center;">0</span>
+      </button>
+      <div class="avatar">RK</div>
+    </div>
+  </header>
+
+  <!-- ══════════════════════════════════════ DASHBOARD -->
+  <main class="page" id="page-dashboard">
+    <div class="page-header">
+      <div>
+        <div class="page-title">Dashboard</div>
+        <div class="page-subtitle">Your shop overview</div>
+      </div>
+      <div class="page-date" id="today-date"></div>
+    </div>
+    <div class="stat-cards">
+      <div class="stat-card">
+        <div class="stat-card-header">
+          <div class="stat-icon"><svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10"/></svg></div>
+          <span class="stat-label">Total Items</span>
+        </div>
+        <div class="stat-value" id="total-items">—</div>
+        <div class="stat-sub green" id="new-today">+0 new</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-card-header">
+          <div class="stat-icon"><svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path stroke-linecap="round" stroke-linejoin="round" d="M12 6v6l4 2"/></svg></div>
+          <span class="stat-label">Expiring Soon</span>
+        </div>
+        <div class="stat-value" id="expiring-count">—</div>
+        <div class="stat-sub orange" id="urgent-count">0 urgent</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-card-header">
+          <div class="stat-icon"><svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M13 17h8m0 0V9m0 8l-8-8-4 4-6-6"/></svg></div>
+          <span class="stat-label">Low Stock</span>
+        </div>
+        <div class="stat-value" id="lowstock-count">—</div>
+        <div class="stat-sub reorder" onclick="showPage('inventory')">Reorder</div>
+      </div>
+    </div>
+    <div class="panels">
+      <div class="panel">
+        <div class="panel-header">
+          <span class="panel-title">Expiring Soon</span>
+          <a class="panel-link" href="#" onclick="showPage('inventory');return false;">View all</a>
+        </div>
+        <div class="expiry-list" id="expiry-list"><p style="color:#9ca3af;font-size:13px;">Loading...</p></div>
+      </div>
+      <div class="panel">
+        <div class="panel-header">
+          <span class="panel-title">Low Stock</span>
+          <a class="panel-link" href="#" onclick="showPage('inventory');return false;">Reorder all</a>
+        </div>
+        <div class="stock-list" id="stock-list"><p style="color:#9ca3af;font-size:13px;">Loading...</p></div>
+      </div>
+    </div>
+  </main>
+
+  <!-- ══════════════════════════════════════ INVENTORY -->
+  <main class="page" id="page-inventory" style="display:none;">
+    <div class="page-header">
+      <div><div class="page-title">Inventory</div><div class="page-subtitle">All your stock items</div></div>
+    </div>
+    <div class="panel">
+      <table class="data-table">
+        <thead><tr><th>Name</th><th>Category</th><th>Qty</th><th>Expiry</th><th>Sell Price</th><th>Supplier</th><th>Action</th></tr></thead>
+        <tbody id="inventory-tbody"><tr><td colspan="7" style="text-align:center;padding:24px;color:#9ca3af;">Loading...</td></tr></tbody>
+      </table>
+    </div>
+  </main>
+
+  <!-- ══════════════════════════════════════ ADD ITEM -->
+  <main class="page" id="page-additem" style="display:none;">
+    <div class="page-header">
+      <div><div class="page-title">Add Item</div><div class="page-subtitle">Add new product to inventory</div></div>
+    </div>
+    <div class="panel" style="max-width:620px;">
+      <form onsubmit="addProduct(event)" class="form-grid">
+        <div class="form-group"><label>Product Name *</label><input type="text" name="name" placeholder="e.g. Amul Butter 100g" required/></div>
+        <div class="form-group"><label>Category</label><input type="text" name="category" placeholder="e.g. Dairy"/></div>
+        <div class="form-group"><label>Quantity *</label><input type="number" name="quantity" placeholder="50" min="0" required/></div>
+        <div class="form-group"><label>Unit</label>
+          <select name="unit"><option value="pcs">pcs</option><option value="kg">kg</option><option value="g">g</option><option value="L">L</option><option value="ml">ml</option><option value="pack">pack</option><option value="dozen">dozen</option></select>
+        </div>
+        <div class="form-group"><label>Expiry Date</label><input type="date" name="expiryDate"/></div>
+        <div class="form-group"><label>Buy Price (₹)</label><input type="number" name="buyPrice" placeholder="0" min="0" step="0.01"/></div>
+        <div class="form-group"><label>Sell Price (₹)</label><input type="number" name="sellPrice" placeholder="0" min="0" step="0.01"/></div>
+        <div class="form-group"><label>Supplier Name</label><input type="text" name="supplierName" placeholder="e.g. Amul Distributor"/></div>
+        <div class="form-group" style="grid-column:1/-1;"><button type="submit" class="btn-primary">+ Add Item</button></div>
+      </form>
+    </div>
+  </main>
+
+  <!-- ══════════════════════════════════════ BILLING -->
+  <main class="page" id="page-billing" style="display:none;">
+    <div class="page-header">
+      <div><div class="page-title">Billing</div><div class="page-subtitle">Create a new bill</div></div>
+    </div>
+
+    <div class="billing-layout">
+      <!-- LEFT: Bill builder -->
+      <div class="billing-left">
+        <div class="panel">
+          <div class="panel-header"><span class="panel-title">Customer Details</span></div>
+          <div class="form-grid" style="grid-template-columns:1fr 1fr;gap:12px;margin-bottom:0;">
+            <div class="form-group"><label>Customer Name</label><input type="text" id="bill-customer" placeholder="Walk-in Customer"/></div>
+            <div class="form-group"><label>Payment Mode</label>
+              <select id="bill-payment"><option value="cash">Cash</option><option value="upi">UPI</option><option value="card">Card</option><option value="katha">Katha (Credit)</option></select>
+            </div>
+          </div>
+        </div>
+
+        <div class="panel" style="margin-top:16px;">
+          <div class="panel-header"><span class="panel-title">Add Items to Bill</span></div>
+          <div style="display:flex;gap:10px;margin-bottom:14px;flex-wrap:wrap;">
+            <div style="flex:2;min-width:160px;">
+              <label style="font-size:12px;font-weight:600;color:#6b7280;display:block;margin-bottom:5px;">Select Product</label>
+              <select id="bill-product-select" style="width:100%;padding:9px 12px;border:1px solid #e5e7eb;border-radius:8px;font-size:13.5px;font-family:Inter,sans-serif;">
+                <option value="">— Choose product —</option>
+              </select>
+            </div>
+            <div style="flex:0 0 90px;">
+              <label style="font-size:12px;font-weight:600;color:#6b7280;display:block;margin-bottom:5px;">Qty</label>
+              <input type="number" id="bill-qty" value="1" min="1" style="width:100%;padding:9px 12px;border:1px solid #e5e7eb;border-radius:8px;font-size:13.5px;font-family:Inter,sans-serif;"/>
+            </div>
+            <div style="flex:0 0 auto;align-self:flex-end;">
+              <button onclick="addItemToBill()" class="btn-primary">+ Add</button>
+            </div>
+          </div>
+
+          <!-- Bill items table -->
+          <table class="data-table" id="bill-items-table">
+            <thead><tr><th>Item</th><th>Qty</th><th>Price</th><th>Total</th><th></th></tr></thead>
+            <tbody id="bill-items-tbody">
+              <tr id="bill-empty-row"><td colspan="5" style="text-align:center;padding:20px;color:#9ca3af;font-size:13px;">No items added yet</td></tr>
+            </tbody>
+          </table>
+
+          <div class="bill-total-row">
+            <span>Total Amount</span>
+            <span id="bill-grand-total">₹0.00</span>
+          </div>
+
+          <button onclick="generateBill()" class="btn-primary" style="width:100%;margin-top:14px;padding:12px;">🧾 Generate Bill</button>
+        </div>
+      </div>
+
+      <!-- RIGHT: Bill preview -->
+      <div class="billing-right">
+        <div class="panel" id="bill-preview-panel">
+          <div class="panel-header"><span class="panel-title">Bill Preview</span>
+            <button onclick="printBill()" class="btn-action" id="print-btn" style="display:none;">🖨️ Print</button>
+          </div>
+          <div id="bill-preview">
+            <p style="color:#9ca3af;font-size:13px;text-align:center;padding:40px 0;">Bill will appear here after you click Generate Bill</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </main>
+
+  <!-- ══════════════════════════════════════ SALES RECORDS -->
+  <main class="page" id="page-sales" style="display:none;">
+    <div class="page-header">
+      <div><div class="page-title">Sales Records</div><div class="page-subtitle">Daily and monthly revenue</div></div>
+    </div>
+    <div class="stat-cards" style="margin-bottom:20px;">
+      <div class="stat-card">
+        <div class="stat-card-header"><div class="stat-icon"><svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg></div><span class="stat-label">Today's Sales</span></div>
+        <div class="stat-value" id="daily-total">₹0</div>
+        <div class="stat-sub green" id="daily-count">0 bills today</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-card-header"><div class="stat-icon"><svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"/></svg></div><span class="stat-label">This Month</span></div>
+        <div class="stat-value" id="monthly-total">₹0</div>
+        <div class="stat-sub green">Monthly revenue</div>
+      </div>
+    </div>
+    <div class="panel">
+      <div class="panel-header"><span class="panel-title">Recent Bills</span></div>
+      <table class="data-table">
+        <thead><tr><th>Bill #</th><th>Customer</th><th>Items</th><th>Amount</th><th>Payment</th><th>Date</th></tr></thead>
+        <tbody id="sales-tbody"><tr><td colspan="6" style="text-align:center;padding:24px;color:#9ca3af;">Loading...</td></tr></tbody>
+      </table>
+    </div>
+  </main>
+
+  <!-- ══════════════════════════════════════ KATHA BOOK -->
+  <main class="page" id="page-katha" style="display:none;">
+    <div class="page-header">
+      <div><div class="page-title">Katha Book</div><div class="page-subtitle">Customer credit tracker</div></div>
+    </div>
+
+    <!-- Add Customer Form -->
+    <div class="panel" style="max-width:600px;margin-bottom:20px;">
+      <div class="panel-header"><span class="panel-title">Add New Customer</span></div>
+      <form onsubmit="addKathaCustomer(event)" class="form-grid">
+        <div class="form-group"><label>Customer Name *</label><input type="text" name="customerName" placeholder="e.g. Suresh Babu" required/></div>
+        <div class="form-group"><label>Phone</label><input type="tel" name="phone" placeholder="9876543210"/></div>
+        <div class="form-group" style="grid-column:1/-1;"><label>Address</label><input type="text" name="address" placeholder="e.g. Near Bus Stand"/></div>
+        <div class="form-group" style="grid-column:1/-1;"><button type="submit" class="btn-primary">+ Add Customer</button></div>
+      </form>
+    </div>
+
+    <!-- Katha table -->
+    <div class="panel">
+      <div class="panel-header"><span class="panel-title">All Customers</span>
+        <span style="font-size:12px;color:#9ca3af;">Click + Credit or + Payment to add entries</span>
+      </div>
+      <table class="data-table">
+        <thead><tr><th>Customer</th><th>Phone</th><th>Address</th><th>Total Due</th><th>Actions</th></tr></thead>
+        <tbody id="katha-tbody"><tr><td colspan="5" style="text-align:center;padding:24px;color:#9ca3af;">Loading...</td></tr></tbody>
+      </table>
+    </div>
+
+    <!-- Transaction history for selected customer -->
+    <div class="panel" id="katha-history-panel" style="margin-top:16px;display:none;">
+      <div class="panel-header">
+        <span class="panel-title" id="katha-history-title">Transaction History</span>
+        <button onclick="document.getElementById('katha-history-panel').style.display='none'" class="btn-delete">Close</button>
+      </div>
+      <table class="data-table">
+        <thead><tr><th>Type</th><th>Amount</th><th>Note</th><th>Date</th></tr></thead>
+        <tbody id="katha-history-tbody"></tbody>
+      </table>
+    </div>
+  </main>
+
+  <!-- ══════════════════════════════════════ SUPPLIERS -->
+  <main class="page" id="page-suppliers" style="display:none;">
+    <div class="page-header">
+      <div><div class="page-title">Suppliers</div><div class="page-subtitle">Manage your supplier contacts</div></div>
+    </div>
+    <div class="panel" style="max-width:620px;margin-bottom:20px;">
+      <div class="panel-header"><span class="panel-title">Add Supplier</span></div>
+      <form onsubmit="addSupplier(event)" class="form-grid">
+        <div class="form-group"><label>Supplier Name *</label><input type="text" name="supName" placeholder="e.g. Amul Distributor" required/></div>
+        <div class="form-group"><label>Contact Person</label><input type="text" name="contactPerson" placeholder="e.g. Ramesh Kumar"/></div>
+        <div class="form-group"><label>Phone</label><input type="tel" name="phone" placeholder="9876543210"/></div>
+        <div class="form-group"><label>Address / Area</label><input type="text" name="address" placeholder="e.g. Koti Market"/></div>
+        <div class="form-group" style="grid-column:1/-1;"><label>Products Supplied</label><input type="text" name="productsSupplied" placeholder="e.g. Dairy, Butter"/></div>
+        <div class="form-group" style="grid-column:1/-1;"><button type="submit" class="btn-primary">+ Add Supplier</button></div>
+      </form>
+    </div>
+    <div class="panel">
+      <table class="data-table">
+        <thead><tr><th>Name</th><th>Contact</th><th>Phone</th><th>Address</th><th>Action</th></tr></thead>
+        <tbody id="suppliers-tbody"><tr><td colspan="5" style="text-align:center;padding:24px;color:#9ca3af;">Loading...</td></tr></tbody>
+      </table>
+    </div>
+  </main>
+
+  <!-- ══════════════════════════════════════ NOTIFICATIONS -->
+  <main class="page" id="page-notifications" style="display:none;">
+    <div class="page-header">
+      <div><div class="page-title">Notifications</div><div class="page-subtitle">Expiry and stock alerts</div></div>
+    </div>
+    <div class="panel"><div id="notifications-list"><p style="color:#9ca3af;font-size:13px;">Loading...</p></div></div>
+  </main>
+
+</div><!-- end .main -->
+
+<!-- PRINT AREA (hidden) -->
+<div id="print-area" style="display:none;"></div>
+
+<script src="script.js"></script>
+</body>
+</html>

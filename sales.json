@@ -1,0 +1,19 @@
+[
+  {
+    "id": "1775318345240",
+    "customerName": "sridevi",
+    "items": [
+      {
+        "productId": "1775222029464",
+        "name": "monaco",
+        "quantity": 12,
+        "sellPrice": 10,
+        "lineTotal": 120
+      }
+    ],
+    "totalAmount": 120,
+    "paymentMode": "upi",
+    "kathaId": null,
+    "date": "2026-04-04T15:59:05.240Z"
+  }
+]
