@@ -1,0 +1,36 @@
+[
+  {
+    "id": "1775317452101",
+    "customerName": "sai lasya Amudala",
+    "phone": "06304363082",
+    "address": "Cheeryal,kesara Geetanjali college of pharmac",
+    "totalDue": 250,
+    "transactions": [
+      {
+        "id": "1775318286265",
+        "type": "credit",
+        "amount": 250,
+        "note": "monaco",
+        "date": "2026-04-04T15:58:06.265Z"
+      }
+    ],
+    "addedOn": "2026-04-04T15:44:12.102Z"
+  },
+  {
+    "id": "1775317517911",
+    "customerName": "bhavyasreeamudala",
+    "phone": "06304363082",
+    "address": "Cheeryal,kesara Geetanjali college of pharmac",
+    "totalDue": -500,
+    "transactions": [
+      {
+        "id": "1775318299640",
+        "type": "payment",
+        "amount": 500,
+        "note": "monaco",
+        "date": "2026-04-04T15:58:19.640Z"
+      }
+    ],
+    "addedOn": "2026-04-04T15:45:17.911Z"
+  }
+]

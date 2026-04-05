@@ -1,0 +1,9 @@
+[
+  {
+    "id": 1,
+    "shopName": "My Shop",
+    "username": "admin",
+    "password": "admin123",
+    "firstLogin": true
+  }
+]
